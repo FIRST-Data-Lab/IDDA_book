@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Data Visualization with “ggplot2” | Statistical Learning of Infectious Disease Data Analytics</title>
+  <meta name="description" content="The use of statistical models to understand infectious disease dynamics has a very rich history in epidemiology. This book introduces modern statistical models and state-of-the-art learning methods to analyze infectious disease data. Many of the key approaches, examples and case studies will be presented. The primary emphasis will be interpretation, inference and hands-on data analyses. This course also provides practical concepts and R computing skills to perform infectious disease data analysis and visualization." />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Data Visualization with “ggplot2” | Statistical Learning of Infectious Disease Data Analytics" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="The use of statistical models to understand infectious disease dynamics has a very rich history in epidemiology. This book introduces modern statistical models and state-of-the-art learning methods to analyze infectious disease data. Many of the key approaches, examples and case studies will be presented. The primary emphasis will be interpretation, inference and hands-on data analyses. This course also provides practical concepts and R computing skills to perform infectious disease data analysis and visualization." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Data Visualization with “ggplot2” | Statistical Learning of Infectious Disease Data Analytics" />
+  
+  <meta name="twitter:description" content="The use of statistical models to understand infectious disease dynamics has a very rich history in epidemiology. This book introduces modern statistical models and state-of-the-art learning methods to analyze infectious disease data. Many of the key approaches, examples and case studies will be presented. The primary emphasis will be interpretation, inference and hands-on data analyses. This course also provides practical concepts and R computing skills to perform infectious disease data analysis and visualization." />
+  
+
+<meta name="author" content="Lily Wang" />
+
+
+<meta name="date" content="2022-01-24" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dplyr.html"/>
+<link rel="next" href="plotly.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Supplementary Material of IDDA</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Preface</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#data-sets-used-in-labs-and-exercises"><i class="fa fa-check"></i><b>1.1</b> Data Sets Used in Labs and Exercises</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#acknowledgements"><i class="fa fa-check"></i><b>1.2</b> Acknowledgements</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#about-the-author"><i class="fa fa-check"></i><b>1.3</b> About the Author</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="dplyr.html"><a href="dplyr.html"><i class="fa fa-check"></i><b>3</b> Data Wrangling</a></li>
+<li class="chapter" data-level="4" data-path="ggplot2.html"><a href="ggplot2.html"><i class="fa fa-check"></i><b>4</b> Data Visualization with “ggplot2”</a></li>
+<li class="chapter" data-level="5" data-path="plotly.html"><a href="plotly.html"><i class="fa fa-check"></i><b>5</b> Interactive Visualization</a></li>
+<li class="chapter" data-level="6" data-path="modeling.html"><a href="modeling.html"><i class="fa fa-check"></i><b>6</b> Epidemic Modeling</a></li>
+<li class="chapter" data-level="7" data-path="compartment.html"><a href="compartment.html"><i class="fa fa-check"></i><b>7</b> Compartment Models</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Statistical Learning of Infectious Disease Data Analytics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="ggplot2" class="section level1" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Data Visualization with “ggplot2”</h1>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:combinedscatter"></span>
+<img src="SLID_book_files/figure-html/combinedscatter-1.png" alt="Top left: Scatterplot of log cumulative death against log cumulative infected case. Top right: Scatterplot with customized labels and title. Bottom left: A scatterplot with customized axis range for continuous features. Bottom right:   A scatterplot with customized axis range for discrete features." width="100%" />
+<p class="caption">
+Figure 4.1: Top left: Scatterplot of log cumulative death against log cumulative infected case. Top right: Scatterplot with customized labels and title. Bottom left: A scatterplot with customized axis range for continuous features. Bottom right: A scatterplot with customized axis range for discrete features.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:combinedcolorscatter"></span>
+<img src="SLID_book_files/figure-html/combinedcolorscatter-1.png" alt="Top: A scatterplot with all points colored blue. Middle: A scatterplot with points colored by `Region`. Bottom: A scatterplot with points colored by `pop`." width="100%" />
+<p class="caption">
+Figure 4.2: Top: A scatterplot with all points colored blue. Middle: A scatterplot with points colored by <code>Region</code>. Bottom: A scatterplot with points colored by <code>pop</code>.
+</p>
+</div>
+<!-- EVAL = F (COMBINED PLOT)-->
+<!-- EVAL = F (COMBINED PLOT)-->
+<!-- EVAL = F (COMBINED PLOT)-->
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure"><span style="display:block;" id="fig:combinedcolorscatter2"></span>
+<img src="SLID_book_files/figure-html/combinedcolorscatter2-1.png" alt="Top left: A scatterplot with customized color palette for discrete scale. Top right: A scatterplot with customized color palette for continuous scale. Middle left: A scatterplot with customized point size.  Middle right: A scatterplot with customized point size and color. Bottom left: A scatterplot with customized point size using the Method 1. Bottom right: A scatterplot with customized point size using the Method 2." width="100%" />
+<p class="caption">
+Figure 4.3: Top left: A scatterplot with customized color palette for discrete scale. Top right: A scatterplot with customized color palette for continuous scale. Middle left: A scatterplot with customized point size. Middle right: A scatterplot with customized point size and color. Bottom left: A scatterplot with customized point size using the Method 1. Bottom right: A scatterplot with customized point size using the Method 2.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure"><span style="display:block;" id="fig:combinedHistogram"></span>
+<img src="SLID_book_files/figure-html/combinedHistogram-1.png" alt="Histogram examples using `geom_histogram()`." width="100%" />
+<p class="caption">
+Figure 4.4: Histogram examples using <code>geom_histogram()</code>.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:Combindedbars"></span>
+<img src="SLID_book_files/figure-html/Combindedbars-1.png" alt="Top left: A bar plot example with `geom_bar()`. Top right: Bar plots of number of states in each region. Middle left: Bar plots of number of states in each region with legend at right. Middle right: Bar plots of number of states in each region with legend at bottom. Bottom left: Bar plots of number of states in each region using `guide_legend(ncol = 2, byrow = TRUE)`. Bottom right: Bar plots of number of states in each region using `guide_legend(reverse = TRUE)`." width="100%" />
+<p class="caption">
+Figure 4.5: Top left: A bar plot example with <code>geom_bar()</code>. Top right: Bar plots of number of states in each region. Middle left: Bar plots of number of states in each region with legend at right. Middle right: Bar plots of number of states in each region with legend at bottom. Bottom left: Bar plots of number of states in each region using <code>guide_legend(ncol = 2, byrow = TRUE)</code>. Bottom right: Bar plots of number of states in each region using <code>guide_legend(reverse = TRUE)</code>.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<!-- ```{r CombinedBoxplot, eval=T, echo=F, fig.show="hold", out.width="50%", fig.cap='Top left: Points plot. Top right: Jittering plot. Bottom left: Boxplot plot. Bottom right: Violin plot.'} -->
+<div class="figure"><span style="display:block;" id="fig:CombinedBoxplot"></span>
+<img src="SLID_book_files/figure-html/CombinedBoxplot-1.png" alt="Top left: Points plot. Top right: Jittering plot. Bottom left: Boxplot plot. Bottom right: Violin plot." width="100%" />
+<p class="caption">
+Figure 4.6: Top left: Points plot. Top right: Jittering plot. Bottom left: Boxplot plot. Bottom right: Violin plot.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure"><span style="display:block;" id="fig:CombinedSmoothers"></span>
+<img src="SLID_book_files/figure-html/CombinedSmoothers-1.png" alt="Top left: `loess` smoother example with `span = 0.5`. Top right: `loess` smoother example with `span = 1.0`. Bottom left: `lm` smoother example with a simple linear regression. Bottom right: `lm` smoother example with a quadratic regression." width="100%" />
+<p class="caption">
+Figure 4.7: Top left: <code>loess</code> smoother example with <code>span = 0.5</code>. Top right: <code>loess</code> smoother example with <code>span = 1.0</code>. Bottom left: <code>lm</code> smoother example with a simple linear regression. Bottom right: <code>lm</code> smoother example with a quadratic regression.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:CombinedTimeS"></span>
+<img src="SLID_book_files/figure-html/CombinedTimeS-1.png" alt="Top left: Basic time series. Top right: Time series with added predictions. Middle left: Time series with ribbons and second line. Middle right: Time series plot with adjusted time range and format. Bottom left: Annotated time series plot with shades and reference lines for each quarter." width="100%" />
+<p class="caption">
+Figure 4.8: Top left: Basic time series. Top right: Time series with added predictions. Middle left: Time series with ribbons and second line. Middle right: Time series plot with adjusted time range and format. Bottom left: Annotated time series plot with shades and reference lines for each quarter.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:CombindedMaps"></span>
+<img src="SLID_book_files/figure-html/CombindedMaps-1.png" alt="Top left: Basic US map with dotted state boundaries. Top right: US map with colored state areas. Middle left: US map with colored state areas according to infected per thousand population. Middle right: US map with colored state areas with limits on the values. Bottom left: US map with colored state areas and county boundaries." width="100%" />
+<p class="caption">
+Figure 4.9: Top left: Basic US map with dotted state boundaries. Top right: US map with colored state areas. Middle left: US map with colored state areas according to infected per thousand population. Middle right: US map with colored state areas with limits on the values. Bottom left: US map with colored state areas and county boundaries.
+</p>
+</div>
+<!-- added -->
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:Combinedconditionals"></span>
+<img src="SLID_book_files/figure-html/Combinedconditionals-1.png" alt="Left: A density plot of `ILI` for each `age` group. Right: A conditional density plot of `log(ILI + 1)` over `age` group for `binwidth = 1`." width="100%" />
+<p class="caption">
+Figure 4.10: Left: A density plot of <code>ILI</code> for each <code>age</code> group. Right: A conditional density plot of <code>log(ILI + 1)</code> over <code>age</code> group for <code>binwidth = 1</code>.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:marginalplots"></span>
+<img src="SLID_book_files/figure-html/marginalplots-1.png" alt="A scatterplot with marginal boxplots." width="100%" />
+<p class="caption">
+Figure 4.11: A scatterplot with marginal boxplots.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:CombinedFacets"></span>
+<img src="SLID_book_files/figure-html/CombinedFacets-1.png" alt="Facetting examples using the functions `facet_wrap()` and `facet_grid()`." width="100%" />
+<p class="caption">
+Figure 4.12: Facetting examples using the functions <code>facet_wrap()</code> and <code>facet_grid()</code>.
+</p>
+</div>
+<!-- Combined B/W version -->
+<!-- echo = F -->
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:CombinedPatchworks"></span>
+<img src="SLID_book_files/figure-html/CombinedPatchworks-1.png" alt="Patchwork examples. Top: Horizontal arrangement of two plots (`p1+p2`). Middle left: Vertical arrangement of two plots (`p1/p2`). Middle right: Grouped arrangements of three plots (`p1|(p2/p3)`). Bottom left:  Grouped arrangements of three plots (`p1+p2+p3`) by setting the number of plots per row with `plot_layout()`. Bottom right: Grouped arrangements of three plots  (`p1+p2+p3`), using `plot_layout()`, whose duplicate legends are combined through `guides = &quot;collect&quot;`." width="100%" />
+<p class="caption">
+Figure 4.13: Patchwork examples. Top: Horizontal arrangement of two plots (<code>p1+p2</code>). Middle left: Vertical arrangement of two plots (<code>p1/p2</code>). Middle right: Grouped arrangements of three plots (<code>p1|(p2/p3)</code>). Bottom left: Grouped arrangements of three plots (<code>p1+p2+p3</code>) by setting the number of plots per row with <code>plot_layout()</code>. Bottom right: Grouped arrangements of three plots (<code>p1+p2+p3</code>), using <code>plot_layout()</code>, whose duplicate legends are combined through <code>guides = "collect"</code>.
+</p>
+</div>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dplyr.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="plotly.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["SLID_book.pdf", "SLID_book.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
