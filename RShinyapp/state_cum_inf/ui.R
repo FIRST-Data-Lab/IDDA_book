@@ -1,7 +1,7 @@
-library(tidyr)
 library(shiny)
 library(dplyr)
-library(IDDA) 
+library(IDDA)
+library(plotly)
 
 shinyUI(fluidPage(
   sliderInput("date.update",
