@@ -4,7 +4,7 @@ library(plotly)
 library(tidyr)
 library(lubridate)
 
-shinyUI(fluidPage(
+fluidPage(
   div(class="outer",
       # tags$head(includeCSS("styles.css")),
       plotlyOutput("county_risk_ts", height="90%", width="100%"),
@@ -14,8 +14,8 @@ shinyUI(fluidPage(
                     selectInput("plot_type",
                                 label = h5("Select type"),
                                 choices = c("WLR" = "wlr", "IR" = "localrisk",
-                                            "SIR" = "smr")
+                                            "SIR" = "sir")
                     ) # end of selectInput
       ) # end of absolutePanel
   ) # end of div
-))
+)

@@ -3,7 +3,7 @@ library(dplyr)
 library(IDDA)
 library(plotly)
 
-shinyUI(fluidPage(
+fluidPage(
   sliderInput("date.update",
               label = h5("Select date"),
               min = as.Date("2020-12-01"),
@@ -16,4 +16,4 @@ shinyUI(fluidPage(
   mainPanel(
     plotlyOutput("state_cum_inf", height = "100%", width = "150%")
   )
-))
+)

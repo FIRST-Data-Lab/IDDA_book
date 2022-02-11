@@ -2,7 +2,7 @@ date.update <- as.Date('2020-12-31')
 mycol <- c("#5B1A18", "#F21A00", "#D67236", "#F1BB7B",
            "#D8B70A", "#A2A475", "#81A88D", "#78B7C5",
            "#3B9AB2", "#7294D4", "#C6CDF7", "#E6A0C4")
-ts.plotly <- function(df, type = 'scatter', mode = 'lines+markers',
+ts.plotly = function(df, type = 'scatter', mode = 'lines+markers',
                      group = group, mycol, showlegend = TRUE, visible = T,
                      xaxis = xaxis, yaxis = yaxis, legend = legend) {
 
@@ -16,9 +16,9 @@ ts.plotly <- function(df, type = 'scatter', mode = 'lines+markers',
   return(ts)
 }
 
-county.risk.ts <- function(date.update, type = 'localrisk'){
-  date.all <- date.update - (0:29)
-  date.lag <- date.all - 7
+county.risk.ts = function(date.update, type = 'localrisk'){
+  date.all = date.update - (0:29)
+  date.lag = date.all - 7
   County.pop0 <- IDDA::pop.county
   County.pop <- County.pop0 %>%
     filter((!(State %in% c("Alaska","Hawaii"))))
@@ -34,14 +34,17 @@ county.risk.ts <- function(date.update, type = 'localrisk'){
   var.lag <- gsub("\\-", "\\.", var.lag)
   tmp <- as.matrix((dat[, var.names] - dat[, var.lag])/7)
   dat <- dat[, c("ID", "County", "State", var.names)]
-  smr.c <- sum(County.pop$population)/as.matrix(colSums(dat[,-(1:3)]))
+  sir.c <- sum(County.pop$population)/as.matrix(colSums(dat[, -(1:3)]))
 
-  I0 <- LogI0 <- LocRisk0 <- SMR0 <- dat
+  I0 <- LogI0 <- LocRisk0 <- SIR0 <- dat
   LogI0[,-(1:3)] <- as.matrix(log(dat[,-(1:3)]+1))
-  LocRisk0[,-(1:3)] <- sweep(as.matrix(dat[,-(1:3)]), 1,
+  # Infection rate per thousand population
+  LocRisk0[,-(1:3)] <- sweep(as.matrix(dat[, -(1:3)]), 1,
                              County.pop$population[match(dat$ID, County.pop$ID)],
                              "/") * 1000
-  SMR0[,-(1:3)] <- sweep(LocRisk0[,-(1:3)],2,smr.c/10,"*")
+  # Standardized infection rate
+  SIR0[,-(1:3)] <- sweep(LocRisk0[, -(1:3)], 2, sir.c/10, "*")
+  # Weekly local risk
   WLR0 <- sweep(tmp, 1,
                 County.pop$population[match(dat$ID, County.pop$ID)],
                 "/") * 1e5
@@ -50,14 +53,11 @@ county.risk.ts <- function(date.update, type = 'localrisk'){
   CountyState <- paste(as.character(dat$County),
                        as.character(dat$State), sep = ",")
 
-  LogI <- cbind(county.dat,round(t(LogI0[,-(1:3)]),2))
-  names(LogI) <- c("Date", CountyState)
-
-  LocRisk <- cbind(county.dat,round(t(LocRisk0[,-(1:3)]),2))
+  LocRisk <- cbind(county.dat, round(t(LocRisk0[, -(1:3)]), 2))
   names(LocRisk) <- c("Date", CountyState)
 
-  SMR <- cbind(county.dat,t(SMR0[,-(1:3)]))
-  names(SMR) <- c("Date", CountyState)
+  SIR <- cbind(county.dat,t(SIR0[, -(1:3)]))
+  names(SIR) <- c("Date", CountyState)
 
   WLR <- cbind(county.dat, round(t(WLR0), 2))
   names(WLR) <- c("Date", CountyState)
@@ -69,43 +69,30 @@ county.risk.ts <- function(date.update, type = 'localrisk'){
                     autosize = F, width = 250, height = 200)
 
   if (type == 'localrisk'){
-    ind.county = order(LocRisk0[,var.names[1]], decreasing = TRUE)
+    ind.county = order(LocRisk0[, var.names[1]], decreasing = TRUE)
     df.fr <- LocRisk %>%
       select(c(1, 1 + ind.county[1:10])) %>%
       gather(key = "County.State", value = "LogI", -Date)
     names(df.fr) <- c("x","group","y")
-    yaxis.fr <- list(title = "Local Risk (Cases per Thousand)")
+    yaxis.fr <- list(title = "Infection Rate (Cases per Thousand)")
     ts.fr <- ts.plotly(df.fr, type = 'scatter',
                        mode = 'lines+markers',
                        group = group, mycol,
                        showlegend = TRUE, visible = T,
                        xaxis = xaxis.fr, yaxis = yaxis.fr,
                        legend = legend.fr)
-  }else if (type == 'smr'){
-    ind.county = order(SMR0[,var.names[1]], decreasing = TRUE)
-    df.fr <- SMR %>%
+  }else if (type == 'sir'){
+    ind.county = order(SIR0[, var.names[1]], decreasing = TRUE)
+    df.fr <- SIR %>%
       select(c(1, 1 + ind.county[1:10])) %>%
       gather(key = "County.State", value = "LogI", -Date)
-    names(df.fr) <- c("x","group","y")
-    yaxis.fr <- list(title = "SMR (%)")
+    names(df.fr) <- c("x", "group", "y")
+    yaxis.fr <- list(title = "SIR (%)")
     ts.fr <- ts.plotly(df.fr, type = 'scatter',
                        mode = 'lines+markers',
                        group = group, mycol, showlegend = TRUE,
                        visible = T, xaxis = xaxis.fr,
                        yaxis = yaxis.fr, legend = legend.fr)
-  }else if (type == 'logcount'){
-    ind.county = order(dat[,var.names[1]], decreasing = TRUE)
-    df.fr <- LogI %>%
-      select(c(1,1+ind.county[1:10])) %>%
-      gather(key = "County.State", value = "LogI", -Date)
-    names(df.fr) = c("x","group","y")
-    yaxis.fr <- list(title = "Log Counts")
-    ts.fr <- ts.plotly(df.fr, type = 'scatter',
-                       mode = 'lines+markers',
-                       group = group, mycol,
-                       showlegend = TRUE, visible = T,
-                       xaxis = xaxis.fr, yaxis = yaxis.fr,
-                       legend = legend.fr)
   }else if (type == 'wlr'){
     ind.county <- order(WLR0[, var.names[1]], decreasing = TRUE)
     df.fr <- WLR %>%
@@ -123,8 +110,8 @@ county.risk.ts <- function(date.update, type = 'localrisk'){
   return(ts.fr)
 }
 
-shinyServer(function(input, output) {
+function(input, output) {
   output$county_risk_ts <- renderPlotly({
     ts <- county.risk.ts(date.update, type = input$plot_type)
   })
-})
+}
