@@ -216,70 +216,12 @@ div.csl-indent {
 Figure 12.1: An illustration of ensemble methods.
 </p>
 </div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="hybrid-models.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use autoplot to display the time series and the forecasting results.</span></span>
-<span id="cb14-2"><a href="hybrid-models.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># autoplot(forecast(hmod), xlab = &quot;Days&quot;, ylab = &quot;Daily new deaths&quot;,</span></span>
-<span id="cb14-3"><a href="hybrid-models.html#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     main = &quot;Combined forecast from different models&quot;)</span></span>
-<span id="cb14-4"><a href="hybrid-models.html#cb14-4" aria-hidden="true" tabindex="-1"></a>hmod.fc.report <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(hmod.fc) <span class="sc">%&gt;%</span></span>
-<span id="cb14-5"><a href="hybrid-models.html#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DATE =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-12-17&quot;</span>) <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>)</span>
-<span id="cb14-6"><a href="hybrid-models.html#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(hmod.fc.report) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Y.Death&quot;</span>, <span class="st">&quot;Lo.80&quot;</span>, <span class="st">&quot;Hi.80&quot;</span>, </span>
-<span id="cb14-7"><a href="hybrid-models.html#cb14-7" aria-hidden="true" tabindex="-1"></a>                           <span class="st">&quot;Lo.95&quot;</span>, <span class="st">&quot;Hi.95&quot;</span>, <span class="st">&quot;DATE&quot;</span>)</span>
-<span id="cb14-8"><a href="hybrid-models.html#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="hybrid-models.html#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Florida.ts, <span class="fu">aes</span>(DATE, Y.Death)) <span class="sc">+</span> </span>
-<span id="cb14-10"><a href="hybrid-models.html#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">&#39;Reported&#39;</span>)) <span class="sc">+</span> </span>
-<span id="cb14-11"><a href="hybrid-models.html#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Days&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Daily new deaths&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb14-12"><a href="hybrid-models.html#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add prediction intervals</span></span>
-<span id="cb14-13"><a href="hybrid-models.html#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE, </span>
-<span id="cb14-14"><a href="hybrid-models.html#cb14-14" aria-hidden="true" tabindex="-1"></a>                            <span class="at">y =</span> Y.Death, </span>
-<span id="cb14-15"><a href="hybrid-models.html#cb14-15" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymin =</span> Lo<span class="fl">.95</span>, </span>
-<span id="cb14-16"><a href="hybrid-models.html#cb14-16" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymax =</span> Hi<span class="fl">.95</span>,</span>
-<span id="cb14-17"><a href="hybrid-models.html#cb14-17" aria-hidden="true" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&#39;95% Prediction intervals&#39;</span>), </span>
-<span id="cb14-18"><a href="hybrid-models.html#cb14-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> hmod.fc.report, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb14-19"><a href="hybrid-models.html#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add line for predicted values</span></span>
-<span id="cb14-20"><a href="hybrid-models.html#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE, </span>
-<span id="cb14-21"><a href="hybrid-models.html#cb14-21" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> Y.Death,</span>
-<span id="cb14-22"><a href="hybrid-models.html#cb14-22" aria-hidden="true" tabindex="-1"></a>                          <span class="at">colour =</span> <span class="st">&#39;Predicted&#39;</span>),</span>
-<span id="cb14-23"><a href="hybrid-models.html#cb14-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> hmod.fc.report,</span>
-<span id="cb14-24"><a href="hybrid-models.html#cb14-24" aria-hidden="true" tabindex="-1"></a>            <span class="at">key_glyph =</span> <span class="st">&quot;timeseries&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb14-25"><a href="hybrid-models.html#cb14-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Reported =</span> <span class="st">&quot;grey60&quot;</span>, </span>
-<span id="cb14-26"><a href="hybrid-models.html#cb14-26" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">Predicted =</span> <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb14-27"><a href="hybrid-models.html#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="st">&quot;&quot;</span>, <span class="at">values =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span>        </span>
-<span id="cb14-28"><a href="hybrid-models.html#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;Series&quot;</span>),</span>
-<span id="cb14-29"><a href="hybrid-models.html#cb14-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill =</span>  <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb14-30"><a href="hybrid-models.html#cb14-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb14-31"><a href="hybrid-models.html#cb14-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:hmod1"></span>
 <img src="SLID_book_files/figure-html/hmod1-1.png" alt="Combined forecast from different models." width="672" />
 <p class="caption">
 Figure 12.2: Combined forecast from different models.
 </p>
 </div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="hybrid-models.html#cb15-1" aria-hidden="true" tabindex="-1"></a>arima.fc.report <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(arima.fc) <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="hybrid-models.html#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DATE =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-12-17&quot;</span>) <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>)</span>
-<span id="cb15-3"><a href="hybrid-models.html#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(arima.fc.report) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Y.Death&quot;</span>, <span class="st">&quot;Lo.80&quot;</span>, <span class="st">&quot;Hi.80&quot;</span>, </span>
-<span id="cb15-4"><a href="hybrid-models.html#cb15-4" aria-hidden="true" tabindex="-1"></a>                            <span class="st">&quot;Lo.95&quot;</span>, <span class="st">&quot;Hi.95&quot;</span>, <span class="st">&quot;DATE&quot;</span>)</span>
-<span id="cb15-5"><a href="hybrid-models.html#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Florida.ts, <span class="fu">aes</span>(DATE, Y.Death)) <span class="sc">+</span></span>
-<span id="cb15-6"><a href="hybrid-models.html#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">&#39;Reported&#39;</span>)) <span class="sc">+</span></span>
-<span id="cb15-7"><a href="hybrid-models.html#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Days&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Death Count&quot;</span>) <span class="sc">+</span></span>
-<span id="cb15-8"><a href="hybrid-models.html#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add prediction intervals</span></span>
-<span id="cb15-9"><a href="hybrid-models.html#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE,</span>
-<span id="cb15-10"><a href="hybrid-models.html#cb15-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">y =</span> Y.Death,</span>
-<span id="cb15-11"><a href="hybrid-models.html#cb15-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymin =</span> Lo<span class="fl">.95</span>,</span>
-<span id="cb15-12"><a href="hybrid-models.html#cb15-12" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymax =</span> Hi<span class="fl">.95</span>,</span>
-<span id="cb15-13"><a href="hybrid-models.html#cb15-13" aria-hidden="true" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&#39;95% Prediction intervals&#39;</span>),</span>
-<span id="cb15-14"><a href="hybrid-models.html#cb15-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> arima.fc.report, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb15-15"><a href="hybrid-models.html#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add line for predicted values</span></span>
-<span id="cb15-16"><a href="hybrid-models.html#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE,</span>
-<span id="cb15-17"><a href="hybrid-models.html#cb15-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> Y.Death,</span>
-<span id="cb15-18"><a href="hybrid-models.html#cb15-18" aria-hidden="true" tabindex="-1"></a>                          <span class="at">colour =</span> <span class="st">&#39;Predicted&#39;</span>),</span>
-<span id="cb15-19"><a href="hybrid-models.html#cb15-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> arima.fc.report,</span>
-<span id="cb15-20"><a href="hybrid-models.html#cb15-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">key_glyph =</span> <span class="st">&quot;timeseries&quot;</span>) <span class="sc">+</span></span>
-<span id="cb15-21"><a href="hybrid-models.html#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Reported =</span> <span class="st">&quot;grey60&quot;</span>, </span>
-<span id="cb15-22"><a href="hybrid-models.html#cb15-22" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">Predicted =</span> <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb15-23"><a href="hybrid-models.html#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="st">&quot;grey50&quot;</span>)  <span class="sc">+</span></span>
-<span id="cb15-24"><a href="hybrid-models.html#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;Series&quot;</span>),</span>
-<span id="cb15-25"><a href="hybrid-models.html#cb15-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill =</span>  <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb15-26"><a href="hybrid-models.html#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb15-27"><a href="hybrid-models.html#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:hmod2"></span>
 <img src="SLID_book_files/figure-html/hmod2-1.png" alt="Forecast from auto.arima model." width="672" />
 <p class="caption">
@@ -292,56 +234,12 @@ Figure 12.3: Forecast from auto.arima model.
 Figure 12.4: Actual and fitted values of each component model.
 </p>
 </div>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="hybrid-models.html#cb16-1" aria-hidden="true" tabindex="-1"></a>hfc.report <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Lo.95 =</span> hfc<span class="sc">$</span>lower[,<span class="dv">2</span>], </span>
-<span id="cb16-2"><a href="hybrid-models.html#cb16-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Hi.95 =</span> hfc<span class="sc">$</span>upper[,<span class="dv">2</span>], <span class="at">Y.Death =</span> hfc<span class="sc">$</span>mean) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="hybrid-models.html#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DATE =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-12-17&quot;</span>) <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>)</span>
-<span id="cb16-4"><a href="hybrid-models.html#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Florida.ts, <span class="fu">aes</span>(DATE, Y.Death)) <span class="sc">+</span></span>
-<span id="cb16-5"><a href="hybrid-models.html#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">&#39;Reported&#39;</span>)) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="hybrid-models.html#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Days&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Death Count&quot;</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="hybrid-models.html#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add prediction intervals</span></span>
-<span id="cb16-8"><a href="hybrid-models.html#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE,</span>
-<span id="cb16-9"><a href="hybrid-models.html#cb16-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">y =</span> Y.Death,</span>
-<span id="cb16-10"><a href="hybrid-models.html#cb16-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymin =</span> Lo<span class="fl">.95</span>,</span>
-<span id="cb16-11"><a href="hybrid-models.html#cb16-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ymax =</span> Hi<span class="fl">.95</span>,</span>
-<span id="cb16-12"><a href="hybrid-models.html#cb16-12" aria-hidden="true" tabindex="-1"></a>                            <span class="at">fill =</span> <span class="st">&#39;95% Prediction intervals&#39;</span>),</span>
-<span id="cb16-13"><a href="hybrid-models.html#cb16-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> hfc.report, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb16-14"><a href="hybrid-models.html#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add line for predicted values</span></span>
-<span id="cb16-15"><a href="hybrid-models.html#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE,</span>
-<span id="cb16-16"><a href="hybrid-models.html#cb16-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> Y.Death,</span>
-<span id="cb16-17"><a href="hybrid-models.html#cb16-17" aria-hidden="true" tabindex="-1"></a>                          <span class="at">colour =</span> <span class="st">&#39;Predicted&#39;</span>),</span>
-<span id="cb16-18"><a href="hybrid-models.html#cb16-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> hfc.report,</span>
-<span id="cb16-19"><a href="hybrid-models.html#cb16-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">key_glyph =</span> <span class="st">&quot;timeseries&quot;</span>) <span class="sc">+</span></span>
-<span id="cb16-20"><a href="hybrid-models.html#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Reported =</span> <span class="st">&quot;grey60&quot;</span>, </span>
-<span id="cb16-21"><a href="hybrid-models.html#cb16-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">Predicted =</span> <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb16-22"><a href="hybrid-models.html#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="st">&quot;grey50&quot;</span>) <span class="sc">+</span></span>
-<span id="cb16-23"><a href="hybrid-models.html#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;Series&quot;</span>),</span>
-<span id="cb16-24"><a href="hybrid-models.html#cb16-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill =</span>  <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb16-25"><a href="hybrid-models.html#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb16-26"><a href="hybrid-models.html#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:hmod5"></span>
 <img src="SLID_book_files/figure-html/hmod5-1.png" alt="Two weeks ahead ensemble forecast from different methods." width="672" />
 <p class="caption">
 Figure 12.5: Two weeks ahead ensemble forecast from different methods.
 </p>
 </div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="hybrid-models.html#cb17-1" aria-hidden="true" tabindex="-1"></a>death.cfc <span class="ot">&lt;-</span> <span class="fu">predict</span>(MLpol0, death.fc, test<span class="sc">$</span>Y.Death, <span class="at">type =</span> <span class="st">&#39;response&#39;</span>)</span>
-<span id="cb17-2"><a href="hybrid-models.html#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the plot</span></span>
-<span id="cb17-3"><a href="hybrid-models.html#cb17-3" aria-hidden="true" tabindex="-1"></a>death.cfc.report <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(death.cfc) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="hybrid-models.html#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">DATE =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-12-17&quot;</span>) <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>)</span>
-<span id="cb17-5"><a href="hybrid-models.html#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(death.cfc.report) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Y.Death&quot;</span>, <span class="st">&quot;DATE&quot;</span>)</span>
-<span id="cb17-6"><a href="hybrid-models.html#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Florida.ts, <span class="fu">aes</span>(DATE, Y.Death)) <span class="sc">+</span></span>
-<span id="cb17-7"><a href="hybrid-models.html#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">&#39;Reported&#39;</span>)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="hybrid-models.html#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Days&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Number of deaths&quot;</span>) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="hybrid-models.html#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> DATE,</span>
-<span id="cb17-10"><a href="hybrid-models.html#cb17-10" aria-hidden="true" tabindex="-1"></a>                          <span class="at">y =</span> Y.Death,</span>
-<span id="cb17-11"><a href="hybrid-models.html#cb17-11" aria-hidden="true" tabindex="-1"></a>                          <span class="at">colour =</span> <span class="st">&#39;Predicted&#39;</span>),</span>
-<span id="cb17-12"><a href="hybrid-models.html#cb17-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> death.cfc.report,</span>
-<span id="cb17-13"><a href="hybrid-models.html#cb17-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">key_glyph =</span> <span class="st">&quot;timeseries&quot;</span>) <span class="sc">+</span></span>
-<span id="cb17-14"><a href="hybrid-models.html#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">Reported =</span> <span class="st">&quot;grey60&quot;</span>, </span>
-<span id="cb17-15"><a href="hybrid-models.html#cb17-15" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">Predicted =</span> <span class="st">&quot;black&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb17-16"><a href="hybrid-models.html#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;Series&quot;</span>),</span>
-<span id="cb17-17"><a href="hybrid-models.html#cb17-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill =</span>  <span class="fu">guide_legend</span>(<span class="at">title =</span> <span class="st">&quot;&quot;</span>)) <span class="sc">+</span></span>
-<span id="cb17-18"><a href="hybrid-models.html#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 <div class="figure" style="text-align: center"><span style="display:block;" id="fig:unnamed-chunk-56"></span>
 <img src="SLID_book_files/figure-html/unnamed-chunk-56-1.png" alt="Two weeks ahead ensemble forecast from ETS and ARIMA models using “opera.”" width="672" />
 <p class="caption">
